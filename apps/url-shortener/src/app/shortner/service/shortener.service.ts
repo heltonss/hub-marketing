@@ -10,7 +10,7 @@ import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class ShortenerUrlService {
-  constructor(@InjectModel(Url.name) private createUrlModel: Model<UrlDocument>) { }
+  constructor(@InjectModel(Url.name) private urlModel: Model<UrlDocument>) { }
 
   async createShortnerUrl(body: CreateUrlShortnerDto): Promise<unknown> {
     const { account, originUrl } = body;
@@ -21,19 +21,23 @@ export class ShortenerUrlService {
     if (validateUrl(originUrl)) {
       try {
         const shortUrl = `${base}/${urlId}`;
-        const createUrl = new this.createUrlModel({
+        const createUrl = new this.urlModel({
           urlId,
           account,
           originUrl,
           shortUrl,
         });
-       const urlCreated = await createUrl.save()
-       return urlCreated.account
+        const urlCreated = await createUrl.save()
+        return urlCreated;
       } catch (err) {
         console.log(err);
       }
     }
-    return `${urlId} ` + JSON.stringify(body)
+  }
+
+  async findShortUrl(urlId: string) {
+    const urlFinded = await this.urlModel.findOneAndUpdate({ urlId }, { $inc: { clicks: 1 } })
+    return urlFinded;
   }
 }
 
