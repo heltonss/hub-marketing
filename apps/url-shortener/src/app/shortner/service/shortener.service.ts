@@ -28,7 +28,7 @@ export class ShortenerUrlService {
           shortUrl,
         });
        const urlCreated = await createUrl.save()
-       return urlCreated;
+       return urlCreated.account
       } catch (err) {
         console.log(err);
       }

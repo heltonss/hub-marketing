@@ -8,6 +8,11 @@ export class Url {
   @Prop({
     required: true,
   })
+  account: string;
+
+  @Prop({
+    required: true,
+  })
   urlId: string;
 
   @Prop({
