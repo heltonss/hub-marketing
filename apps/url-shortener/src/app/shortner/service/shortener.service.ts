@@ -1,8 +1,8 @@
-import { environment } from './../../../environments/environment';
+import { UrlRespone } from './../../interfaces/urlResponse';
+import { UrlRequest } from './../../interfaces/urlRequest';
 import { Url, UrlDocument } from './../../models/Url.schema';
-import { CreateUrlShortnerDto } from '../../dto/createUrlShortner';
+import CreateUrlShortnerDTO from '../../dto/createUrlShortner';
 import { Injectable } from '@nestjs/common';
-import { nanoid } from 'nanoid'
 import { validateUrl } from '../../utils/validate';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
@@ -12,22 +12,14 @@ import { InjectModel } from '@nestjs/mongoose';
 export class ShortenerUrlService {
   constructor(@InjectModel(Url.name) private urlModel: Model<UrlDocument>) { }
 
-  async createShortnerUrl(body: CreateUrlShortnerDto): Promise<unknown> {
+  async createShortnerUrl(body: UrlRequest): Promise<UrlRespone> {
     const { account, originUrl } = body;
-    const base = environment.base;
-
-    const urlId = nanoid(7);
+    const bodyUrlShortner = new CreateUrlShortnerDTO(account, originUrl);
 
     if (validateUrl(originUrl)) {
       try {
-        const shortUrl = `${base}/${urlId}`;
-        const createUrl = new this.urlModel({
-          urlId,
-          account,
-          originUrl,
-          shortUrl,
-        });
-        const urlCreated = await createUrl.save()
+        const createUrl = new this.urlModel(bodyUrlShortner);
+        const urlCreated = await createUrl.save();
         return urlCreated;
       } catch (err) {
         console.log(err);
