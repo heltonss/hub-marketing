@@ -18,7 +18,8 @@
       "@message-hub/api-interfaces": ["libs/api-interfaces/src/index.ts"],
       "@message-hub/marketinghub-interfaces": [
         "libs/marketinghub-interfaces/src/index.ts"
-      ]
+      ],
+      "@message-hub/message-generator": ["libs/message-generator/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
